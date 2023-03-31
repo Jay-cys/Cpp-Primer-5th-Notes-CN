@@ -30,13 +30,13 @@
 // these versions might throw an exception
 void *operator new(size_t);     // allocate an object
 void *operator new[](size_t);   // allocate an array
-void *operator delete(void*) noexcept;      // free an object
-void *operator delete[](void*) noexcept;    // free an array
+void operator delete(void*) noexcept;      // free an object
+void operator delete[](void*) noexcept;    // free an array
 // versions that promise not to throw
 void *operator new(size_t, nothrow_t&) noexcept;
 void *operator new[](size_t, nothrow_t&) noexcept;
-void *operator delete(void*, nothrow_t&) noexcept;
-void *operator delete[](void*, nothrow_t&) noexcept
+void operator delete(void*, nothrow_t&) noexcept;
+void operator delete[](void*, nothrow_t&) noexcept
 ```
 
 `nothrow_t`类型是定义在头文件`new`中的一个结构体，这个类型不包含任何成员。头文件`new`还定义了一个名为`nothrow`的`const`对象，用户可以通过这个对象请求`new`的非抛出版本。
