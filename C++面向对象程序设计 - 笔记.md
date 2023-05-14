@@ -968,7 +968,7 @@ Fraction类对象转换为 double 类型，自动调用double()函数转换：
 
 ## 32. 模板模板参数 ##
 
-- 模板参数中含有模板 - 此时 typename 与 class 等价
+- 模板参数中含有模板 - typename 与 class 等价
 
 <img src="https://gitee.com/sparkle_zz/markdown-pics/raw/master/image-20201111110602719.png" alt="image-20201111110602719" style="zoom:80%;" />
 
@@ -1032,9 +1032,9 @@ int& r2 = r; // r2、r都是x的别名 均等于5
 - **一个虚指针vptr指向一个虚函数表vtbl，虚函数表中含有每个虚函数所在的位置**
 - 继承当然也会继承虚函数，虚函数（可以）在子类中重写
 
-<img src="https://gitee.com/sparkle_zz/markdown-pics/raw/master/image-20201111205708184.png" alt="image-20201111205708184" style="zoom:67%;" />
+<img src="https://gitee.com/sparkle_zz/markdown-pics/raw/master/image-20201111205708184.png" alt="image-20201111205708184" style="zoom:%;" />
 
-- 定义了三个类，A、B和C，B继承于A,C继承于B，A中有两个虚函数，B中有一个，C中也有一个，B C分别重写了虚函数vfunc1()
+- 定义了三个类，A、B和C，B继承于A，C继承于B，A中有两个虚函数，B中有一个，C中也有一个，B C分别重写了虚函数vfunc1()
 
 - A的对象在内存中：有两个成员变量m\_data1和m\_data2 + 一个虚指针
 
@@ -1052,7 +1052,7 @@ int& r2 = r; // r2、r都是x的别名 均等于5
 
 > 函数静态绑定：会编译成call XXX
 >
-> 函数**动态绑定**：函数通过**指针**来调用，指针是**向上转型**的（是继承的子类对象的指针），调用的是**虚函数** - 虚机制
+> 函数**动态绑定**：三个条件，1、函数通过**指针**来调用；2、指针是**向上转型**（最终指向基类）的（是继承的子类对象的指针）；3、调用的是**虚函数** - 虚机制
 >
 > 多态：指针有很多类型
 >
@@ -1062,14 +1062,16 @@ int& r2 = r; // r2、r都是x的别名 均等于5
 
 ## 38. this指针 ##
 
+-   简单来说，通过一个对象调用一个函数，对象的地址就是`this`
+
 ### **| 设计模式 - Template Method**
 
 > c++中所有的成员函数都有一个隐藏的 this 指针 作为参数
 
 <img src="https://gitee.com/sparkle_zz/markdown-pics/raw/master/image-20201111212636779.png" alt="image-20201111212636779" style="zoom:80%;" />
 
-- this指针：指向当前对象内存地址的一个指针
-- 由于基类和子类中有虚函数，this->Serialize()将动态绑定，等价于`(*(this->vptr)[n])(this)`
+- `this`指针：指向当前对象内存地址的一个指针
+- 由于基类和子类中有虚函数，this->Serialize()将==动态绑定==，等价于`(*(this->vptr)[n])(this)`
 
 ## 39. const 常量关键字
 
