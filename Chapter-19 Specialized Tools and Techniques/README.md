@@ -1,3 +1,5 @@
+[TOC]
+
 # 第19章 特殊工具与技术
 
 ## 控制内存分配（Controlling Memory Allocation）

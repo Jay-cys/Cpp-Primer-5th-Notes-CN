@@ -22,7 +22,7 @@ using std::cout;
 
 ![3-1](Images/3-1.png)
 
-如果使用等号初始化一个变量，实际上执行的是拷贝初始化（copy initialization），编译器把等号右侧的初始值拷贝到新创建的对象中去。如果不使用等号，则执行的是直接初始化（direct initialization）。
+==如果使用等号初始化一个变量，实际上执行的是拷贝初始化（copy initialization），编译器把等号右侧的初始值拷贝到新创建的对象中去。如果不使用等号，则执行的是直接初始化（direct initialization）。==
 
 ### `string`对象上的操作（Operations on `string`s）
 

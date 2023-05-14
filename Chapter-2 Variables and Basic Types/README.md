@@ -212,16 +212,20 @@ int main()
 ```c++
 int ival = 1024;
 int &refVal = ival; // refVal refers to (is another name for) ival
-int &refVal2;       // error: a reference must be initialized
+int &refVal2;       // error: a reference must be initialized 
 ```
 
-定义引用时，程序把引用和它的初始值绑定（bind）在一起，而不是将初始值拷贝给引用。一旦初始化完成，将无法再令引用重新绑定到另一个对象，因此引用必须初始化。
+定义引用时，程序把引用和它的初始值绑定（bind）在一起，而不是将初始值拷贝给引用。一旦初始化完成，将无法再令引用重新绑定到另一个对象，因此==引用必须初始化==。
 
 引用不是对象，它只是为一个已经存在的对象所起的另外一个名字。
 
 声明语句中引用的类型实际上被用于指定它所绑定的对象类型。大部分情况下，引用的类型要和与之绑定的对象严格匹配。
 
 引用只能绑定在对象上，不能与字面值或某个表达式的计算结果绑定在一起。
+
+#### Note
+
+这里 `refVal = 1024, &refVal = 地址`
 
 ### 指针（Pointer）
 
@@ -261,7 +265,7 @@ int *p = &ival; // p holds the address of ival; p is a pointer to ival
 
 试图拷贝或以其他方式访问无效指针的值都会引发错误。
 
-如果指针指向一个对象，可以使用解引用（dereference）符`*`来访问该对象。
+如果指针指向一个对象，可以使用==解引用（dereference）符==`*`来访问该对象。
 
 ```c++
 int ival = 42;

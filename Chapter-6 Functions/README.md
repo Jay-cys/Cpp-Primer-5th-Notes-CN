@@ -84,9 +84,9 @@ int f4(int v1, int v2) { /* ... */ }  // ok
 
 形参的类型决定了形参和实参交互的方式：
 
-- 当形参是引用类型时，它对应的实参被引用传递（passed by reference），函数被传引用调用（called by reference）。引用形参是它对应实参的别名。
+- ==当形参是引用类型时，它对应的实参被引用传递（passed by reference），函数被传引用调用（called by reference）。引用形参是它对应实参的别名。==
 
-- 当形参不是引用类型时，形参和实参是两个相互独立的对象，实参的值会被拷贝给形参（值传递，passed by value），函数被传值调用（called by value）。
+- ==当形参不是引用类型时，形参和实参是两个相互独立的对象，实参的值会被拷贝给形参（值传递，passed by value），函数被传值调用（called by value）。==
 
 ### 传值参数（Passing Arguments by Value）
 
@@ -251,7 +251,7 @@ return expression;
 
 如果函数返回引用类型，则该引用仅仅是它所引用对象的一个别名。
 
-函数不应该返回局部对象的指针或引用，因为一旦函数完成，局部对象将被释放。
+==函数不应该返回局部对象的指针或引用，因为一旦函数完成，局部对象将被释放。==
 
 ```c++
 // disaster: this function returns a reference to a local object
@@ -290,7 +290,7 @@ C++11规定，函数可以返回用花括号包围的值的列表。同其他返
   }
   ```
 
-`main`函数可以没有`return`语句直接结束。如果控制流到达了`main`函数的结尾处并且没有`return`语句，编译器会隐式地插入一条返回0的`return`语句。
+`main`==函数可以没有==`return`==语句直接结束==。如果控制流到达了`main`函数的结尾处并且没有`return`语句，编译器会隐式地插入一条返回0的`return`语句。
 
 `main`函数的返回值可以看作是状态指示器。返回0表示执行成功，返回其他值表示执行失败，其中非0值的具体含义依机器而定。
 
@@ -338,14 +338,14 @@ Type (*function(parameter_list))[dimension]
 
 其中`Type`表示元素类型，`dimension`表示数组大小，`(*function(parameter_list))`两端的括号必须存在。
 
-C++11允许使用尾置返回类型（trailing return type）简化复杂函数声明。尾置返回类型跟在形参列表后面，并以一个`->`符号开头。为了表示函数真正的返回类型在形参列表之后，需要在本应出现返回类型的地方添加`auto`关键字。
+C++11允许使用==尾置返回类型==（trailing return type）简化复杂函数声明。尾置返回类型跟在形参列表后面，并以一个`->`符号开头。为了表示函数真正的返回类型在形参列表之后，需要在本应出现返回类型的地方添加`auto`关键字。
 
 ```c++
 // fcn takes an int argument and returns a pointer to an array of ten ints
 auto func(int i) -> int(*)[10];
 ```
 
-任何函数的定义都能使用尾置返回类型，但是这种形式更适用于返回类型比较复杂的函数。
+任何函数的定义都能使用尾置返回类型，但是这种形式==更适用于返回类型比较复杂的函数==。
 
 如果我们知道函数返回的指针将指向哪个数组，就可以使用`decltype`关键字声明返回类型。但`decltype`并不会把数组类型转换成指针类型，所以还要在函数声明中添加一个`*`符号。
 
@@ -434,7 +434,7 @@ void fooBar(int ival)
 }
 ```
 
-在C++中，名字查找发生在类型检查之前。
+==在C++中，名字查找发生在类型检查之前。==
 
 ## 特殊用途语言特性（Features for Specialized Uses）
 
@@ -513,7 +513,7 @@ inline const string &horterString(const string &s1, const string &s2)
 
 在函数声明和定义中都能使用关键字`inline`，但是建议只在函数定义时使用。
 
-一般来说，内联机制适用于优化规模较小、流程直接、调用频繁的函数。内联函数中不允许有循环语句和`switch`语句，否则函数会被编译为普通函数。
+一般来说，内联机制适用于优化规模较小、流程直接、调用频繁的函数。==内联函数中不允许有循环语句和`switch`语句，否则函数会被编译为普通函数。==
 
 `constexpr`函数是指能用于常量表达式的函数。`constexpr`函数的返回类型及所有形参的类型都得是字面值类型。另外C++11标准要求`constexpr`函数体中必须有且只有一条`return`语句，但是此限制在C++14标准中被删除。
 
@@ -540,9 +540,15 @@ int i = 2;          // i is not a constant expression
 int a2[scale(i)];   // error: scale(i) is not a constant expression
 ```
 
-`constexpr`函数被隐式地指定为内联函数。
+==`constexpr`函数被隐式地指定为内联函数。==
 
 和其他函数不同，内联函数和`constexpr`函数可以在程序中多次定义。因为在编译过程中，编译器需要函数的定义来随时展开函数。对于某个给定的内联函数或`constexpr`函数，它的多个定义必须完全一致。因此内联函数和`constexpr`函数通常定义在头文件中。
+
+#### Note
+
+以 inline **修饰**的函数叫做内联函数，**编译时**C++编译器会在**调用内联函数的地方展开**，没有函数压栈的开销，内联函数提升程序运行的效率，代价是占用更多的内存。
+
+`inline`函数最终是否`inline`取决于编译器，如果非常复杂，那么可能无法`inline`
 
 ### 调试帮助（Aids for Debugging）
 
@@ -568,7 +574,7 @@ int a2[scale(i)];   // error: scale(i) is not a constant expression
 
 所有算术类型转换的级别都一样。
 
-如果载函数的区别在于它们的引用或指针类型的形参是否含有底层`const`，则调用发生时编译器通过实参是否是常量来决定函数的版本。
+如果重载函数的区别在于它们的引用或指针类型的形参是否含有底层`const`，则调用发生时编译器通过实参是否是常量来决定函数的版本。
 
 ```c++
 Record lookup(Account&);    // function that takes a reference to Account
