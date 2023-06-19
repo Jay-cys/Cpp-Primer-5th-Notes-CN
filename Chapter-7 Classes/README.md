@@ -2,7 +2,7 @@
 
 类的基本思想是数据抽象（data abstraction）和封装（encapsulation）。数据抽象是一种依赖于接口（interface）和实现（implementation）分离的编程及设计技术。类的接口包括用户所能执行的操作；类的实现包括类的数据成员、负责接口实现的函数体以及其他私有函数。
 
-#### Note
+==Note==
 
 类可以理解为一种新的数据类型，类似于`int、float、double`
 
@@ -13,11 +13,11 @@
 
 ## 定义抽象数据类型（Defining Abstract Data Types）
 
-### 设计`Sales_data`类（Designing the `Sales_data` Class）
+### 设计Sales_data类（Designing the Sales_data Class）
 
 类的用户是程序员，而非应用程序的最终使用者。
 
-### 定义改进的`Sales_data`类（Defining the Revised `Sales_data` Class）
+### 定义改进的Sales_data类（Defining the Revised Sales_data Class）
 
 成员函数（member function）的声明必须在类的内部，定义则既可以在类的内部也可以在类的外部。==定义在类内部的函数是隐式的内联函数。==
 
@@ -35,6 +35,10 @@ struct Sales_data
     double revenue = 0.0;
 };
 ```
+
+==Note==
+
+>   const修饰成员函数的时候，const需要放在成员函数的后面，不能放在一开始，若是放在一开始的话，那么const修饰的是函数的返回值，而非是修饰成员函数了
 
 成员函数通过一个名为`this`的隐式额外参数来访问调用它的对象。`this`参数是一个常量指针，被初始化为调用该函数的对象地址。在函数体内可以显式使用`this`指针。
 
@@ -145,7 +149,7 @@ struct Sales_data
 
 - ==只有当类没有声明任何构造函数时，编译器才会自动生成默认构造函数。一旦类定义了其他构造函数，那么除非再显式地定义一个默认的构造函数，否则类将没有默认构造函数。==
 
-- 如果类包含内置类型或者复合类型的成员，则只有当这些成员全部存在类内初始值时，这个类才适合使用合成的默认构造函数。否则用户在创建类的对象时就可能得到未定义的值。
+- 如果类包含内置类型（即基础类型，整数、浮点、void）或者复合类型的成员，则只有当这些成员全部存在类内初始值时，这个类才适合使用合成的默认构造函数。否则用户在创建类的对象时就可能得到未定义的值。
 
 - 编译器不能为某些类合成默认构造函数。例如类中包含一个其他类类型的成员，且该类型没有默认构造函数，那么编译器将无法初始化该成员。
 
@@ -206,6 +210,22 @@ private: // access specifier added
 一个类可以包含零或多个访问说明符，每个访问说明符指定了接下来的成员的访问级别，其有效范围到出现下一个访问说明符或类的结尾处为止。
 
 使用关键字`struct`定义类时，定义在第一个访问说明符之前的成员是`public`的；而使用关键字`class`时，这些成员是`private`的。二者唯一的区别就是默认访问权限不同。
+
+==Note==：[struct 和 class 的区别](https://www.jianshu.com/p/409f931c17d9)
+
+>   class和struct都是用来存储多个变量的，两者的用法的差不多，但存在以下区别：
+>
+>   1.class是引用类型，而struct是值类型。
+>
+>   2.struct不能被继承，而class可以被继承。
+>
+>   3.class中默认的成员访问权限是private的，而struct中则是public的。
+
+==Note==：[c++类的实例化](https://blog.csdn.net/Lu_gl/article/details/105114726)
+
+>   只要是new，就需要调用malloc方法，就是在进程虚拟地址空间中的堆中分配与释放空间，需要用户自身管理
+>
+>   其他情况下，一般是在栈空间，由系统来分配和释放
 
 ### 友元（Friends）
 
@@ -346,7 +366,7 @@ class Screen;   // declaration of the Screen class
 ```c++
 class Link_screen
 {
-    Screen window;
+    Screen window;	// 会报错，因为Screen类没有完成定义
     Link_screen *next;
     Link_screen *prev;
 };
@@ -457,7 +477,7 @@ public:
     typedef std::string::size_type pos;
     void dummy_fcn(pos height)
     {
-        cursor = width * height;  // which height? the parameter
+        cursor = width * height;  // which height? the parameter，调用时传入的参数
     }
 
 private:
@@ -526,6 +546,19 @@ public:
         bookNo(s), units_sold(cnt), revenue(rev*cnt) { }
     Sales_data(std::istream &is) { read(is, *this); }
     // remaining members as before
+}
+```
+
+```c++
+class Sales_data
+{
+public:
+	// 非委托构造函数使用对应的实参初始化成员
+    Sales_data(std::string s, unsigned cnt, double price): bookNo(s), units_sold(cnt), revenue(cnt *price) { }
+    // 其余构造函数全部委托给另一个构造函数
+    Sales_data(): Sales_data(" ", 0, 0) { }
+    Sales_data(std::string s): Sales_data(s, 0, 0) { }
+    Sales_data(std::istream &is): Sales_data() { read(is, *this) }
 }
 ```
 
@@ -683,7 +716,7 @@ private:
 };
 ```
 
-由于静态成员不与任何对象绑定，因此静态成员函数不能声明为`const`的，也不能在静态成员函数内使用`this`指针。
+由于==静态成员不与任何对象绑定==，因此静态成员函数不能声明为`const`的，也不能在静态成员函数内使用`this`指针。
 
 用户代码可以使用作用域运算符访问静态成员，也可以通过类对象、引用或指针访问。类的成员函数可以直接访问静态成员。
 
@@ -709,7 +742,7 @@ private:
 
 在类外部定义静态成员时，不能重复`static`关键字，其只能用于类内部的声明语句。
 
-由于静态数据成员不属于类的任何一个对象，因此它们并不是在创建类对象时被定义的。通常情况下，不应该在类内部初始化静态成员。而必须在类外部定义并初始化每个静态成员。一个静态成员只能被定义一次。一旦它被定义，就会一直存在于程序的整个生命周期中。
+由于静态数据成员不属于类的任何一个对象，因此它们并不是在创建类对象时被定义的。==通常情况下，不应该在类内部初始化静态成员==。而必须在类外部定义并初始化每个静态成员。一个静态成员只能被定义一次。==一旦它被定义，就会一直存在于程序的整个生命周期中。==
 
 ```c++
 // define and initialize a static class member
@@ -732,7 +765,7 @@ private:
 };
 ```
 
-静态数据成员的类型可以是它所属的类类型。
+==静态数据成员的类型可以是它所属的类类型，非静态数据成员只能声明陈它所属类的指针或引用==。
 
 ```c++
 class Bar
@@ -743,7 +776,7 @@ class Bar
 }
 ```
 
-可以使用静态成员作为函数的默认实参。
+==可以使用静态成员作为函数的默认实参，但是不能用非静态成员作为默认实参。==
 
 ```c++
 class Screen

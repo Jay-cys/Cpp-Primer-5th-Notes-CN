@@ -42,7 +42,7 @@ pubilc > protected > private(所有的数据都应该放在 private，打算被�
 
 - 构造函数名与类名相同，可以有参数，参数也可以有默认值，没有返回类型，用于创建对象
 
-- 构造函数中，<u>成员变量初始化中使用":"函数方式</u>性能比直接在构造函数中赋值要快，建议使用这种方式。
+- 构造函数中，==成员变量初始化中使用":"函数方式==性能比直接在构造函数中赋值要快，建议使用这种方式。
 
   ```c++
   public:
@@ -125,7 +125,7 @@ pubilc > protected > private(所有的数据都应该放在 private，打算被�
 
 - 任何一个成员函数都有一个隐藏的 ==this指针==，不需要显式声明，但是可以使用，指向调用者
 - 如上图所所示，在运算符重载过程中隐藏了this指针，该指针编译器会处理，使用者不能显式声明
-- 操作符重载时，返回值不能是void，单个操作时不会报错，但连续操作是由于没有返回值会出现问题
+- ==操作符重载时，返回值不能是void==，单个操作时不会报错，但连续操作是由于没有返回值会出现问题
 
 <img src="https://gitee.com/sparkle_zz/markdown-pics/raw/master/image-20201107202144254.png" alt="image-20201107202144254" style="zoom: 80;" />
 
@@ -416,13 +416,15 @@ int main()
 
 - Class中有指针，必须要有<u>拷贝构造和拷贝赋值</u>，并且多半要做动态分配，需要析构函数释放内存，以防内存泄漏
 
+    - 原因：==当我们在有指针类成员变量的时候，还是用默认拷贝构造函数(拷贝构造函数执行的时候会调用赋值符)，默认赋值为浅拷贝，会导致两个对象指向同一块堆区空间，在最后析构的时候导致内存二次析构而出错！==
+
 - 析构函数在离开函数作用域之前，释放内存
 
   | 实现拷贝构造 与 析构函数：
 
 <img src="https://gitee.com/sparkle_zz/markdown-pics/raw/master/image-20201107221909751.png" alt="image-20201107221909751" style="zoom:100%;" />
 
-- 在重载“=”赋值运算符时需要检查自我赋值，避免浅拷贝：
+- 在重载`“=”`赋值运算符时需要检查自我赋值，避免浅拷贝：
 
 <img src="https://gitee.com/sparkle_zz/markdown-pics/raw/master/image-20201107221547386.png" alt="image-20201107221547386" style="zoom: 100%;" />
 
@@ -442,12 +444,12 @@ Big-Three：拷贝构造，拷贝赋值，析构函数
 
 - stack栈空间：存在于作用域的一块内存空间，作用域结束时会销毁
   - stack object 又称为 auto object，因为作用域结束时，自动调用其析构函数，自动清理
-  - static object：`static Complex c2(1,2)`加上关键字 static 成为静态对象，生命周期在作用域结束后仍然存在，程序结束时才会调用其析构函数清理
+  - static object：`static Complex c2(1,2)`加上关键字 static 成为静态对象，==生命周期在作用域结束后仍然存在，程序结束时才会调用其析构函数清理==
   - global object：写在大括号之外的全局对象，类似static，作用域是整个程序
 
 <img src="https://gitee.com/sparkle_zz/markdown-pics/raw/master/image-20201109114859528.png" alt="image-20201109114859528" style="zoom: 80%;" />
 
-- heap堆空间：一块global内存空间，关键字new会动态分配 heap，需要手动 delete
+- heap堆空间：==一块global内存空间==，关键字new会动态分配 heap，需要手动 delete
 
   <img src="https://gitee.com/sparkle_zz/markdown-pics/raw/master/image-20201109115903089.png" alt="image-20201109115903089" style="zoom:80%;" />
 
@@ -607,30 +609,34 @@ ostream& operator<<(ostream& os, const String& str)
 
 string_test.cpp
 
-	#include "string.h"
-	#include <iostream>
-	
-	using namespace std;
-	
-	int main()
-	{
-	  String s1("hello"); 
-	  String s2("world");
-	    
-	  String s3(s2);
-	  cout << s3 << endl;
-	  
-	  s3 = s1;
-	  cout << s3 << endl;     
-	  cout << s2 << endl;  
-	  cout << s1 << endl;      
-	}
+```cpp
+#include "string.h"
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+  String s1("hello");	// 调用默认构造函数 String::String(const char* cstr)
+  String s2("world");	// 调用默认构造函数 String::String(const char* cstr)
+    
+  String s3(s2);		// 调用拷贝构造函数 String::String(const String& str)
+  cout << s3 << endl;	
+  
+  s3 = s1;				// 调用拷贝赋值函数 String& String::operator=(const String& str)
+  cout << s3 << endl;
+  cout << s2 << endl;
+  cout << s1 << endl;  
+}
+```
 
 ## 15. static 关键字
 
 static + 函数/数据 -> 静态 函数/数据
 
 - 静态数据：==只有一份，在类class的外部需要定义，可以赋初值，可以不赋==
+
+    - ==为什么静态变量需要类外定义：在C++中声明静态成员变量的时候，在类中只是进行了声明，并没有实际的申请出指针的内存，真正的内存是定义初始化的时候才会进行内存的申请；因为[static](https://so.csdn.net/so/search?q=static&spm=1001.2101.3001.7020)类型的变量都是随着类的，因此不能随着对象的创建而申请内存，所以需要单独的进行类外定义，在定义的时候C++编译器会申请内存给静态指针。==
 
 - 静态函数：没有 this point
 
@@ -641,6 +647,10 @@ static + 函数/数据 -> 静态 函数/数据
 - 静态成员函数，调用成员函数时，不会有地址的传递
 
   <img src="https://gitee.com/sparkle_zz/markdown-pics/raw/master/image-20201109142336203.png" alt="image-20201109142336203" style="zoom:80%;" />
+
+  ==Note==
+
+  类对象：类本质上也是一种对象（类对象）
 
 - ### **单例模式**- 构造函数放在private中，不允许外界构造对象，但可以通过public函数取得private成员，加上关键字static，该对象只能有一个
 
@@ -708,7 +718,7 @@ static + 函数/数据 -> 静态 函数/数据
 
 ## 20. Inheritance 继承
 
-| 子类完全继承父类的变量与函数   <空心三角形 + 箭头：子类->父类> 
+| 子类完全继承父类的变量与函数   <空心三角形 + 箭头：子类->父类>
 
 - 构造顺序：由内而外 - 先调用父类构造函数 再进入子类构造函数
 - 析构顺序：由外而内 - 先调用子类的析构函数 再进入父类析构函数
@@ -726,7 +736,7 @@ static + 函数/数据 -> 静态 函数/数据
 
 - non-virtual 函数：不允许子类重新定义这个函数（override）
 - virtual 函数：希望子类重新定义它，并且有默认定义
-- pure virtual 函数（纯虚函数）：子类一定要重新定义它，因为它没有默认定义
+- pure virtual 函数（纯虚函数）：子类一定要重新定义它，因为它没有默认定义。在虚函数后加“=0”，如 `virtual void func()=0`
 
 <img src="https://gitee.com/sparkle_zz/markdown-pics/raw/master/image-20201109201253691.png" alt="image-20201109201253691" style="zoom: 80%;" />
 
@@ -798,7 +808,7 @@ static + 函数/数据 -> 静态 函数/数据
 
 ## 22. explicit 关键字（显式） ##
 
-C++中， 一个参数的构造函数(或者除了第一个参数外其余参数都有默认值的多参构造函数)， 承担了两个角色。1 是个构造器 ，2 是个默认且隐含的类型转换操作符。
+==C++中， 一个参数的构造函数(或者除了第一个参数外其余参数都有默认值的多参构造函数)， 承担了两个角色。 1 是个构造器 ，2 是个默认且隐含的类型转换操作符。==
 
 所以， 有时候在我们写下如 AAA = XXX， 这样的代码， 且恰好XXX的类型正好是AAA单参数构造器的参数类型，这时候编译器就自动调用这个构造器， 创建一个AAA的对象。
 
@@ -919,13 +929,17 @@ Fraction类对象转换为 double 类型，自动调用 double() 函数转换：
 
 <img src="https://i.imgur.com/G5iodMK.png" style="zoom: 80%;" />
 
+### Note
+
+仿函数的好处是可以通过重载操作符`()`来实现更加灵活的行为，例如可以在一个仿函数中保存一些状态信息，或者将它作为一个回调函数来传递给其他函数使用。
+
 ## 27.namespace ##
 
 <img src="https://gitee.com/sparkle_zz/markdown-pics/raw/master/image-20201110183805826.png" alt="image-20201110183805826" style="zoom:100%;" />
 
 ## 28. 类模板 ##
 
-<img src="https://gitee.com/sparkle_zz/markdown-pics/raw/master/image-20201110183941745.png" alt="image-20201110183941745" style="zoom:50%;" />
+<img src="https://gitee.com/sparkle_zz/markdown-pics/raw/master/image-20201110183941745.png" alt="image-20201110183941745" style="zoom:0%;" />
 
 ## 29. 函数模板 ##
 
@@ -998,7 +1012,7 @@ Fraction类对象转换为 double 类型，自动调用 double() 函数转换：
 
 ## 36. reference ##
 
-- reference可以看做是某个被引用变量的别名。`引用的地址和大小都与原变量相同`
+- reference可以看做是某个被引用变量的别名，用==代表==来理解。`引用的地址和大小都与原变量相同`
 - reference常用于参数传递、返回值传递
   - 速度快
   - 写法与传值相同：调用对象的成员函数时 `obj.xxx()`，而传指针时：`obj->xxx()`
@@ -1210,4 +1224,15 @@ int& r2 = r; // r2、r都是x的别名 均等于5
 `reference`通常不用于声明变量，而用于<u>参数类型</u>和<u>返回类型</u>的描述
 
 ![reference2](.\image\reference2.png)
+
+## 42.杂记
+
+-   类本质上就是一个对象（类对象）
+-   不做特别说明的话，成员数据和成员函数默认为 private
+-   为什么存在内存对齐（存在于结构体和类中）
+    -   平台原因：不是所有的硬件平台都能访问任意地址上的任意数据的；某些硬件平台只能在某些地址处取某些特定类型的数据，否则抛出硬件异常
+    -   性能原因：数据结构(尤其是栈)应该尽可能地在自然边界上齐。原因在于，为了访问未对齐的内存，处理器需要作两次内存访问；而对齐的内存访问仅需要一次访问
+    -   总的来说，结构体的内存对齐是拿空间来换取时间的做法
+
+
 

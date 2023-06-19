@@ -376,7 +376,7 @@ while (begin != v.end())
 }
 ```
 
-## `vector`对象是如何增长的（How a `vector` Grows）
+## vector对象是如何增长的（How a vector Grows）
 
 `vector`和`string`的实现通常会分配比新空间需求更大的内存空间，容器预留这些空间作为备用，可用来保存更多新元素。
 
@@ -392,9 +392,9 @@ while (begin != v.end())
 
 在C++11中可以使用`shrink_to_fit`函数来要求`deque`、`vector`和`string`退回不需要的内存空间（并不保证退回）。
 
-## 额外的`string`操作（Additional string Operations）
+## 额外的string操作（Additional string Operations）
 
-### 构造`string`的其他方法（Other Ways to Construct `string`s）
+### 构造string的其他方法（Other Ways to Construct `string`s）
 
 构造`string`的其他方法：
 
