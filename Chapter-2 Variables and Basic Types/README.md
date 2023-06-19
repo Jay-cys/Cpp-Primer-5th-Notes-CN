@@ -225,7 +225,7 @@ int &refVal2;       // error: a reference must be initialized
 
 #### Note
 
-这里 `refVal = 1024, &refVal = 地址`
+这里 `refVal = 1024, &refVal = 地址`
 
 ### 指针（Pointer）
 
@@ -316,7 +316,7 @@ r = &i;         // r refers to a pointer; assigning &i to r makes p point to i
 
 面对一条比较复杂的指针或引用的声明语句时，从右向左阅读有助于弄清它的真实含义。
 
-## `const`限定符（`const` Qualifier）
+## const限定符（const Qualifier）
 
 在变量类型前添加关键字`const`可以创建值不能被改变的对象。`const`变量必须被初始化。
 
@@ -329,9 +329,9 @@ bufSize = 512;      // error: attempt to write to const object
 
 如果想在多个文件间共享`const`对象：
 
-- 若`const`对象的值在编译时已经确定，则应该定义在头文件中。其他源文件包含该头文件时，不会产生重复定义错误。
+- ==若`const`对象的值在编译时已经确定，则应该定义在头文件中。其他源文件包含该头文件时，不会产生重复定义错误。==
 
-- 若`const`对象的值直到运行时才能确定，则应该在头文件中声明，在源文件中定义。此时`const`变量的声明和定义前都应该添加`extern`关键字。
+- ==若`const`对象的值直到运行时才能确定，则应该在头文件中声明，在源文件中定义。此时`const`变量的声明和定义前都应该添加`extern`关键字。==
 
   ```c++
   // file_1.cc defines and initializes a const that is accessible to other files
@@ -340,7 +340,7 @@ bufSize = 512;      // error: attempt to write to const object
   extern const int bufSize;   // same bufSize as defined in file_1.cc
   ```
 
-### `const`的引用（References to `const`）
+### const的引用（References to const）
 
 把引用绑定在`const`对象上即为对常量的引用（reference to const）。对常量的引用不能被用作修改它所绑定的对象。
 
@@ -370,9 +370,9 @@ int &r2 = ci;   // error: non const reference to a const object
   const int &ri = dval;
   ```
 
-### 指针和`const`（Pointers and `const`）
+### 指针和const（Pointers and const）
 
-指向常量的指针（pointer to const）不能用于修改其所指向的对象。常量对象的地址只能使用指向常量的指针来存放，但是指向常量的指针可以指向一个非常量对象。
+指向常量的指针（pointer to const）不能用于修改其所指向的对象。常量对象的地址只能使用指向常量的指针来存放，但是==指向常量的指针可以指向一个非常量对象==。
 
 ```c++
 const double pi = 3.14;     // pi is const; its value may not be changed
@@ -394,7 +394,7 @@ const double *const pip = &pi;  // pip is a const pointer to a const object
 
 指针本身是常量并不代表不能通过指针修改其所指向的对象的值，能否这样做完全依赖于其指向对象的类型。
 
-### 顶层`const`（Top-Level `const`）
+### 顶层const（Top-Level const）
 
 顶层`const`表示指针本身是个常量，底层`const`（low-level const）表示指针所指的对象是一个常量。指针类型既可以是顶层`const`也可以是底层`const`。
 
@@ -426,7 +426,7 @@ const int &r = ci;      // const in reference types is always low-level
   const int &r2 = i;  // ok: can bind const int& to plain int
   ```
 
-### `constexpr`和常量表达式（`constexpr` and Constant Expressions）
+### constexpr和常量表达式（constexpr and Constant Expressions）
 
 常量表达式（constant expressions）指值不会改变并且在编译过程就能得到计算结果的表达式。
 
@@ -523,7 +523,7 @@ auto &h = 42;   // error: we can't bind a plain reference to a literal
 const auto &j = 42;     // ok: we can bind a const reference to a literal
 ```
 
-### `decltype`类型指示符（The `decltype` Type Specifier）
+### decltype类型指示符（The decltype Type Specifier）
 
 C++11新增`decltype`类型指示符，作用是选择并返回操作数的数据类型，此过程中编译器不实际计算表达式的值。
 

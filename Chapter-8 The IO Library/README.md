@@ -28,7 +28,7 @@
 
 可以将派生类的对象当作其基类的对象使用。
 
-### IO象无拷贝或赋值（No Copy or Assign for IO Objects）
+### IO对象无拷贝或赋值（No Copy or Assign for IO Objects）
 
 不能拷贝或对IO对象赋值。
 
@@ -178,13 +178,13 @@ out.open("precious", ofstream::app);   // mode is out and app
 out.close();
 ```
 
-## `string`流（`string` Streams）
+## string流（string Streams）
 
 头文件`sstream`定义了三个类型来支持内存IO：`istringstream`从`string`读取数据，`ostringstream`向`string`写入数据，`stringstream`可以同时读写`string`的数据。
 
 ![8-5](Images/8-5.png)
 
-### 使用`istringstream`（Using an `istringstream`）
+### 使用istringstream（Using an istringstream）
 
 ```c++
 // members are public by default
@@ -208,7 +208,7 @@ while (getline(cin, line))
 }
 ```
 
-### 使用`ostringstream`（Using `ostringstream`s）
+### 使用ostringstream（Using ostringstreams）
 
 ```C++
 for (const auto &entry : people)
