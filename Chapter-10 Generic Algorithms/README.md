@@ -17,11 +17,13 @@ cout << "The value " << val
 
 迭代器参数令算法不依赖于特定容器，但依赖于元素类型操作。
 
-泛型算法本身不会执行容器操作，它们只会运行于迭代器之上，执行迭代器操作。算法可能改变容器中元素的值，或者在容器内移动元素，但不会改变底层容器的大小（当算法操作插入迭代器时，迭代器可以向容器中添加元素，但算法自身不会进行这种操作）。
+==泛型算法本身不会执行容器操作，它们只会运行于迭代器之上，执行迭代器操作。算法可能改变容器中元素的值，或者在容器内移动元素，但不会改变底层容器的大小==（当算法操作插入迭代器时，迭代器可以向容器中添加元素，但算法自身不会进行这种操作）。
 
 ## 初识泛型算法（A First Look at the Algorithms）
 
 ### 只读算法（Read-Only Algorithms）
+
+#### accumulate
 
 `accumulate`函数（定义在头文件`numeric`中）用于计算一个序列的和。它接受三个参数，前两个参数指定需要求和的元素范围，第三个参数是和的初值（决定加法运算类型和返回值类型）。
 
@@ -35,6 +37,8 @@ string sum = accumulate(v.cbegin(), v.cend(), "");
 
 建议在只读算法中使用`cbegin`和`cend`函数。
 
+#### equal
+
 `equal`函数用于确定两个序列是否保存相同的值。它接受三个迭代器参数，前两个参数指定第一个序列范围，第三个参数指定第二个序列的首元素。`equal`函数假定第二个序列至少与第一个序列一样长。
 
 ```c++
@@ -46,12 +50,16 @@ equal(roster1.cbegin(), roster1.cend(), roster2.cbegin());
 
 ### 写容器元素的算法（Algorithms That Write Container Elements）
 
+#### fill
+
 `fill`函数接受两个迭代器参数表示序列范围，还接受一个值作为第三个参数，它将给定值赋予范围内的每个元素。
 
 ```c++
 // reset each element to 0
 fill(vec.begin(), vec.end(), 0);
 ```
+
+#### fill_n
 
 `fill_n`函数接受单个迭代器参数、一个计数值和一个值，它将给定值赋予迭代器指向位置开始的指定个元素。
 
@@ -62,17 +70,21 @@ fill_n(vec.begin(), vec.size(), 0);
 
 向目的位置迭代器写入数据的算法都假定目的位置足够大，能容纳要写入的元素。
 
+#### back_inserter
+
 插入迭代器（insert iterator）是一种向容器内添加元素的迭代器。通过插入迭代器赋值时，一个与赋值号右侧值相等的元素会被添加到容器中。
 
 `back_inserter`函数（定义在头文件`iterator`中）接受一个指向容器的引用，返回与该容器绑定的插入迭代器。通过此迭代器赋值时，赋值运算符会调用`push_back`将一个具有给定值的元素添加到容器中。
 
 ```c++
 vector<int> vec;    // empty vector
-auto it = back_inserter(vec);   // assigning through it adds elements to vec
+auto it = back_inserter(vec);   // assigning through it adds elements to vec 通过它赋值会将元素添加到vec中
 *it = 42;   // vec now has one element with value 42
-// ok: back_inserter creates an insert iterator that adds elements to vec
+// ok: back_inserter creates an insert iterator that adds elements to vec back_inserter创建一个插入迭代器，可用来想vec添加元素
 fill_n(back_inserter(vec), 10, 0);  // appends ten elements to vec
 ```
+
+#### copy
 
 `copy`函数接受三个迭代器参数，前两个参数指定输入序列，第三个参数指定目的序列的起始位置。它将输入序列中的元素拷贝到目的序列中，返回目的位置迭代器（递增后）的值。
 
@@ -83,12 +95,16 @@ int a2[sizeof(a1) / sizeof(*a1)];     // a2 has the same size as a1
 auto ret = copy(begin(a1), end(a1), a2);    // copy a1 into a2
 ```
 
+#### replace
+
 `replace`函数接受四个参数，前两个迭代器参数指定输入序列，后两个参数指定要搜索的值和替换值。它将序列中所有等于第一个值的元素都替换为第二个值。
 
 ```c++
 // replace any element with the value 0 with 42
 replace(ilst.begin(), ilst.end(), 0, 42);
 ```
+
+#### replace_copy
 
 相对于`replace`，`replace_copy`函数可以保留原序列不变。它接受第三个迭代器参数，指定调整后序列的保存位置。
 
@@ -97,9 +113,13 @@ replace(ilst.begin(), ilst.end(), 0, 42);
 replace_copy(ilst.cbegin(), ilst.cend(), back_inserter(ivec), 0, 42);
 ```
 
+此调用后，`ilst`并未改变，`ivec`包含`ilst`的一份拷贝，不过原来在`ilst`中值为0的元素在`ivec`中都变为42
+
 很多算法都提供“copy”版本，这些版本不会将新元素放回输入序列，而是创建一个新序列保存结果。
 
 ### 重排容器元素的算法（Algorithms That Reorder Container Elements）
+
+#### sort
 
 `sort`函数接受两个迭代器参数，指定排序范围。它利用元素类型的`<`运算符重新排列元素。
 
@@ -116,7 +136,9 @@ void elimDups(vector<string> &words)
 }
 ```
 
-`unique`函数重排输入序列，消除相邻的重复项，返回指向不重复值范围末尾的迭代器。
+#### unique
+
+`unique`函数重排输入序列，消除相邻的重复项，返回指向不重复值范围末尾的迭代器。使用`unique`前提，先进行排序
 
 ![10-1](Images/10-1.png)
 
@@ -126,7 +148,7 @@ void elimDups(vector<string> &words)
 
 ### 向算法传递函数（Passing a Function to an Algorithm）
 
-谓词（predicate）是一个可调用的表达式，其返回结果是一个能用作条件的值。标准库算法使用的谓词分为一元谓词（unary predicate，接受一个参数）和二元谓词（binary predicate，接受两个参数）。接受谓词参数的算法会对输入序列中的元素调用谓词，因此元素类型必须能转换为谓词的参数类型。
+==谓词（predicate）是一个可调用的表达式，其返回结果是一个能用作条件的值。==标准库算法使用的谓词分为一元谓词（unary predicate，接受一个参数）和二元谓词（binary predicate，接受两个参数）。接受谓词参数的算法会对输入序列中的元素调用谓词，因此元素类型必须能转换为谓词的参数类型。
 
 ```c++
 // comparison function to be used to sort by word length
@@ -143,9 +165,17 @@ sort(words.begin(), words.end(), isShorter);
 
 ### lambda表达式（Lambda Expressions）
 
+[可参考c++新特性笔记](../../modern-cpp-new-features/c++11特性-笔记.md)
+
+#### find_if
+
 `find_if`函数接受两个迭代器参数和一个谓词参数。迭代器参数用于指定序列范围，之后对序列中的每个元素调用给定谓词，并返回第一个使谓词返回非0值的元素。如果不存在，则返回尾迭代器。
 
-对于一个对象或表达式，如果可以对其使用调用运算符`()`，则称它为可调用对象（callable object）。可以向算法传递任何类别的可调用对象。
+#### 可调用对象
+
+对于一个对象或表达式，如果可以对其使用调用运算符`()`，则称它为==可调用对象（callable object）==。可以向算法传递任何类别的可调用对象。
+
+#### lambda格式
 
 一个`lambda`表达式表示一个可调用的代码单元，类似未命名的内联函数，但可以定义在函数内部。其形式如下：
 
@@ -162,13 +192,15 @@ auto f = [] { return 42; };
 cout << f() << endl;    // prints 42
 ```
 
-`lambda`可以使用其所在函数的局部变量，但必须先将其包含在捕获列表中。捕获列表只能用于局部非`static`变量，`lambda`可以直接使用局部`static`变量和其所在函数之外声明的名字。
+`lambda`可以使用其所在函数的局部变量，但必须先将其包含在捕获列表中。==捕获列表只能用于局部非`static`变量，`lambda`可以直接使用局部`static`变量和其所在函数之外声明的名字。==
 
 ```c++
 // get an iterator to the first element whose size() is >= sz
 auto wc = find_if(words.begin(), words.end(),
                     [sz](const string &a) { return a.size() >= sz; });
 ```
+
+#### for_each
 
 `for_each`函数接受一个输入序列和一个可调用对象，它对输入序列中的每个元素调用此对象。
 
@@ -315,7 +347,7 @@ copy(lst.cbegin(), lst.cend(), front_inserter(lst2));
 copy(lst.cbegin(), lst.cend(), inserter(lst3, lst3.begin()));
 ```
 
-### `iostream`迭代器（`iostream` Iterators）
+### iostream迭代器（iostream Iterators）
 
 `istream_iterator`从输入流读取数据，`ostream_iterator`向输出流写入数据。这些迭代器将流当作特定类型的元素序列处理。
 
@@ -323,7 +355,7 @@ copy(lst.cbegin(), lst.cend(), inserter(lst3, lst3.begin()));
 
 ```c++
 istream_iterator<int> int_it(cin);  // reads ints from cin
-istream_iterator<int> int_eof;      // end iterator value
+istream_iterator<int> int_eof;      // end iterator value 尾后迭代器
 ifstream in("afile");
 istream_iterator<string> str_it(in);   // reads strings from "afile"
 ```
@@ -477,7 +509,7 @@ reverse_copy(beg, end, dest);   // copy elements in reverse order into dest
 
 ## 特定容器算法（Container-Specific Algorithms）
 
-对于`list`和`forward_list`类型，应该优先使用成员函数版本的算法，而非通用算法。
+==对于`list`和`forward_list`类型，应该优先使用成员函数版本的算法，而非通用算法。==
 
 `list`和`forward_list`成员函数版本的算法：
 
@@ -488,3 +520,4 @@ reverse_copy(beg, end, dest);   // copy elements in reverse order into dest
 ![10-10](Images/10-10.png)
 
 链表特有版本的算法操作会改变底层容器。
+
