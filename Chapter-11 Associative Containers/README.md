@@ -1,3 +1,5 @@
+[TOC]
+
 # 第11章 关联容器
 
 关联容器支持高效的关键字查找和访问操作。2个主要的关联容器（associative-container）类型是`map`和`set`。
@@ -80,7 +82,7 @@ bool compareIsbn(const Sales_data &lhs, const Sales_data &rhs)
 multiset<Sales_data, decltype(compareIsbn)*> bookstore(compareIsbn);
 ```
 
-### `pair`类型（The `pair` Type）
+### pair类型（The pair Type）
 
 `pair`定义在头文件`utility`中。一个`pair`可以保存两个数据成员，分别命名为`first`和`second`。
 
@@ -189,7 +191,7 @@ word_count.insert(map<string, size_t>::value_type(word, 1));
 
 与顺序容器不同，关联容器提供了一个额外的`erase`操作。它接受一个`key_type`参数，删除所有匹配给定关键字的元素（如果存在），返回实际删除的元素数量。对于不包含重复关键字的容器，`erase`的返回值总是1或0。若返回值为0，则表示想要删除的元素并不在容器中。
 
-### `map`的下标操作（Subscripting a `map`）
+### map的下标操作（Subscripting a map）
 
 `map`下标运算符接受一个关键字，获取与此关键字相关联的值。如果关键字不在容器中，下标运算符会向容器中添加该关键字，并值初始化关联值。
 
