@@ -67,7 +67,7 @@ while (begin != end)
 
 通过类型别名，可以在不了解容器元素类型的情况下使用元素。如果需要元素类型，可以使用容器的`value_type`。如果需要元素类型的引用，可以使用`reference`或`const_reference`。
 
-### `begin`和`end`成员（`begin` and `end` Members）
+### begin和end成员（begin and end Members）
 
 `begin`和`end`操作生成指向容器中第一个元素和尾后地址的迭代器。其常见用途是形成一个包含容器中所有元素的迭代器范围。
 
@@ -93,7 +93,7 @@ auto it4 = a.crbegin();  // list<string>::const_reverse_iterator
 
 将一个容器初始化为另一个容器的拷贝时，两个容器的容器类型和元素类型都必须相同。
 
-传递迭代器参数来拷贝一个范围时，不要求容器类型相同，而且新容器和原容器中的元素类型也可以不同，但是要能进行类型转换。
+==传递迭代器参数来拷贝一个范围时，不要求容器类型相同，而且新容器和原容器中的元素类型也可以不同，但是要能进行类型转换。==
 
 ```c++
 // each container has three elements, initialized from the given initializers
@@ -114,7 +114,7 @@ list<string> authors = {"Milton", "Shakespeare", "Austen"};
 vector<const char*> articles = {"a", "an", "the"};
 ```
 
-定义和使用`array`类型时，需要同时指定元素类型和容器大小。
+==定义和使用`array`类型时，需要同时指定元素类型和容器大小==。
 
 ```c++
 array<int, 42>      // type is: array that holds 42 ints
@@ -127,7 +127,7 @@ array<int>::size_type j;       // error: array<int> is not a type
 
 可以对`array`进行拷贝或赋值操作，但要求二者的元素类型和大小都相同。
 
-### 赋值和`swap`（Assignment and `swap`）
+### 赋值和swap（Assignment and swap）
 
 容器赋值操作：
 
@@ -145,7 +145,7 @@ names.assign(oldstyle.cbegin(), oldstyle.cend());
 
 由于其旧元素被替换，因此传递给`assign`的迭代器不能指向调用`assign`的容器本身。
 
-`swap`交换两个相同类型容器的内容。除`array`外，`swap`不对任何元素进行拷贝、删除或插入操作，只交换两个容器的内部数据结构，因此可以保证快速完成。
+`swap`交换两个相同类型容器的内容。==除`array`外，`swap`不对任何元素进行拷贝、删除或插入操作，只交换两个容器的内部数据结构，因此可以保证快速完成。==
 
 ```c++
 vector<string> svec1(10);   // vector with ten elements
@@ -153,9 +153,9 @@ vector<string> svec2(24);   // vector with 24 elements
 swap(svec1, svec2);
 ```
 
-赋值相关运算会导致指向左边容器内部的迭代器、引用和指针失效。而`swap`操作交换容器内容，不会导致迭代器、引用和指针失效（`array`和`string`除外）。
+==赋值相关运算会导致指向左边容器内部的迭代器、引用和指针失效。而`swap`操作交换容器内容，不会导致迭代器、引用和指针失效==（也就是说，迭代器也会交换，所以不失效，依然指向操作前的元素）（`array`和`string`除外）。
 
-对于`array`，`swap`会真正交换它们的元素。因此在`swap`操作后，指针、引用和迭代器所绑定的元素不变，但元素值已经被交换。
+==对于`array`，`swap`会真正交换它们的元素。因此在`swap`操作后，指针、引用和迭代器所绑定的元素不变，但元素值已经被交换。==
 
 ```c++
 array<int, 3> a = { 1, 2, 3 };
@@ -194,7 +194,11 @@ a1 = a2;    // replaces elements in a1
 a2 = {0};   // error: cannot assign to an array from a braced list
 ```
 
-新标准库同时提供了成员和非成员函数版本的`swap`。非成员版本的`swap`在泛型编程中非常重要，建议统一使用非成员版本的`swap`。
+>   这里第一个不是赋值，而是初始化，而第四个是赋值，故错误
+
+新标准库同时提供了成员和非成员函数版本的`swap`。==非成员版本的`swap`在泛型编程中非常重要，建议统一使用非成员版本的`swap`==。
+
+>   swap(a, b) 是全局的，而 a.swap(b) 是容器自带的成员函数
 
 ### 容器大小操作（Container Size Operations）
 
@@ -307,7 +311,7 @@ cout << svec.at(0);   // throws an out_of_range exception
 
 ![9-7](Images/9-7.png)
 
-删除`deque`中除首尾位置之外的任何元素都会使所有迭代器、引用和指针失效。删除`vector`或`string`的元素后，指向删除点之后位置的迭代器、引用和指针也都会失效。
+==删除`deque`中除首尾位置之外的任何元素都会使所有迭代器、引用和指针失效。==删除`vector`或`string`的元素后，指向删除点之后位置的迭代器、引用和指针也都会失效。
 
 删除元素前，程序员必须确保目标元素存在。
 
@@ -343,7 +347,7 @@ elem1 = slist.erase(elem1, elem2);  // after the call elem1 == elem2
 
 ### 容器操作可能使迭代器失效（Container Operations May Invalidate Iterators）
 
-向容器中添加或删除元素可能会使指向容器元素的指针、引用或迭代器失效。失效的指针、引用或迭代器不再表示任何元素，使用它们是一种严重的程序设计错误。
+==向容器中添加或删除元素可能会使指向容器元素的指针、引用或迭代器失效。失效的指针、引用或迭代器不再表示任何元素，使用它们是一种严重的程序设计错误==。
 
 - 向容器中添加元素后：
 
@@ -400,6 +404,8 @@ while (begin != v.end())
 
 ![9-13](Images/9-13.png)
 
+![image-20230620110336282](.assets/image-20230620110336282.png)
+
 从另一个`string`对象拷贝字符构造`string`时，如果提供的拷贝开始位置（可选）大于给定`string`的大小，则构造函数会抛出`out_of_range`异常。
 
 子字符串操作：
@@ -408,7 +414,9 @@ while (begin != v.end())
 
 如果传递给`substr`函数的开始位置超过`string`的大小，则函数会抛出`out_of_range`异常。
 
-### 改变`string`的其他方法（Other Ways to Change a `string`）
+
+
+### 改变string的其他方法（Other Ways to Change a string）
 
 修改`string`的操作：
 
@@ -432,7 +440,7 @@ s.insert(11, "5th");    // s == "C++ Primer 5th Ed."
 s2.replace(11, 3, "5th");   // equivalent: s == s2
 ```
 
-### `string`搜索操作（`string` Search Operations）
+### string搜索操作（string Search Operations）
 
 `string`的每个搜索操作都返回一个`string::size_type`值，表示匹配位置的下标。如果搜索失败，则返回一个名为`string::npos`的`static`成员。标准库将`npos`定义为`const string::size_type`类型，并初始化为-1。
 
@@ -442,7 +450,7 @@ s2.replace(11, 3, "5th");   // equivalent: s == s2
 
 ![9-16](Images/9-16.png)
 
-### `compare`函数（The `compare` Functions）
+### compare函数（The compare Functions）
 
 `string`类型提供了一组`compare`函数进行字符串比较操作，类似C标准库的`strcmp`函数。
 
@@ -488,3 +496,4 @@ stack<string, vector<string>> str_stk2(svec);
 ![9-21](Images/9-21.png)
 
 `queue`使用先进先出（first-in，first-out，FIFO）的存储和访问策略。进入队列的对象被放置到队尾，而离开队列的对象则从队首删除。
+
