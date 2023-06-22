@@ -129,7 +129,7 @@ std::cout << '\115' << '\n';    // prints M followed by a newline
 
 变量定义的基本形式：类型说明符（type specifier）后紧跟由一个或多个变量名组成的列表，其中变量名以逗号分隔，最后以分号结束。定义时可以为一个或多个变量赋初始值（初始化，initialization）。
 
-初始化不等于赋值（assignment）。初始化的含义是创建变量时赋予其一个初始值，而赋值的含义是把对象的当前值擦除，再用一个新值来替代。
+==初始化不等于赋值（assignment）。初始化的含义是创建变量时赋予其一个初始值，而赋值的含义是把对象的当前值擦除，再用一个新值来替代。==
 
 用花括号初始化变量称为列表初始化（list initialization）。当用于内置类型的变量时，如果使用了列表初始化并且初始值存在丢失信息的风险，则编译器会报错。
 
@@ -153,7 +153,7 @@ int c(ld), d = ld;      // ok: but value will be truncated
 
 定义（definition）负责创建与名字相关联的实体。
 
-如果想声明一个变量而不定义它，就在变量名前添加关键字`extern`，并且不要显式地初始化变量。
+==如果想声明一个变量而不定义它，就在变量名前添加关键字`extern`，并且不要显式地初始化变量。==
 
 ```c++
 extern int i; // declares but does not define i
@@ -372,7 +372,7 @@ int &r2 = ci;   // error: non const reference to a const object
 
 ### 指针和const（Pointers and const）
 
-指向常量的指针（pointer to const）不能用于修改其所指向的对象。常量对象的地址只能使用指向常量的指针来存放，但是==指向常量的指针可以指向一个非常量对象==。
+指向常量的指针（pointer to const）不能用于修改其所指向的对象。==常量对象的地址只能使用指向常量的指针来存放==，但是==指向常量的指针可以指向一个非常量对象==。
 
 ```c++
 const double pi = 3.14;     // pi is const; its value may not be changed
@@ -396,7 +396,7 @@ const double *const pip = &pi;  // pip is a const pointer to a const object
 
 ### 顶层const（Top-Level const）
 
-顶层`const`表示指针本身是个常量，底层`const`（low-level const）表示指针所指的对象是一个常量。指针类型既可以是顶层`const`也可以是底层`const`。
+==顶层`const`表示指针本身是个常量，底层`const`（low-level const）表示指针所指的对象是一个常量。==指针类型既可以是顶层`const`也可以是底层`const`。
 
 ```c++
 int i = 0;
