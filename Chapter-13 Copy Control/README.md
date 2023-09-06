@@ -203,7 +203,7 @@ struct NoCopy
 };
 ```
 
-`===delete`和`=default`有两点不同：==
+`=delete`和`=default`有两点不同：==
 
 - ==`=delete`可以对任何函数使用；`=default`只能对具有合成版本的函数使用。==
 
